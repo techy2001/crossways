@@ -31,17 +31,18 @@ public class StageController : MonoBehaviour {
 		if (!dead) {
 			cameraAmp /= 1.1f;
 			if (cameraAmp < 0.01) cameraAmp = 0;
-			cameraController.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = cameraAmp;
 			if (livingEnemies == 0) {
 				player.health = 6;
 			}
 		} else {
 			deadTime++;
 			Time.timeScale = Mathf.Lerp(1, 0.25f, deadTime / 200f);
-			if (Input.GetKey("Restart")) {
+			if (Input.GetButton("Restart")) {
 				restart();
+				return;
 			}
 		}
+		cameraController.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = cameraAmp;
 		if (time > -1 && !stageComplete) {
 			time++;
 		}
@@ -74,6 +75,7 @@ public class StageController : MonoBehaviour {
 	}
 
 	private static void restart() {
+		Time.timeScale = 1;
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}
 }

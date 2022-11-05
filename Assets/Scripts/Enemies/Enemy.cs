@@ -19,10 +19,15 @@ namespace Enemies {
 		}
 
 		protected virtual void calculateMovement() {
-			Vector3 playerPos = StageController.getInstance().getPlayer().gameObject.transform.position;
-			Vector3 enemyPos = transform.position;
-			Vector2 playerAim = new Vector2(playerPos.x - enemyPos.x, playerPos.y - enemyPos.y);
-			rigidbody.velocity = playerAim.normalized * speed;
+			PlayerController player = StageController.getInstance().getPlayer();
+			if (player) {
+				Vector3 playerPos = player.gameObject.transform.position;
+				Vector3 enemyPos = transform.position;
+				Vector2 playerAim = new Vector2(playerPos.x - enemyPos.x, playerPos.y - enemyPos.y);
+				rigidbody.velocity = playerAim.normalized * speed;
+			} else {
+				rigidbody.velocity = Vector2.zero;
+			}
 		}
 
 		protected virtual void decideFlip() {
@@ -34,8 +39,9 @@ namespace Enemies {
 		}
 
 		private void OnCollisionStay2D(Collision2D col) {
-			if (col.gameObject.CompareTag("Player")) {
-				StageController.getInstance().getPlayer().damage(1);
+			PlayerController player = StageController.getInstance().getPlayer();
+			if (player && col.gameObject.CompareTag("Player")) {
+				player.damage(1);
 			}
 		}
 

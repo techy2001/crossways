@@ -46,6 +46,7 @@ public class PlayerController : MonoBehaviour {
 		StageController.getInstance().cameraAmp = 8;
 		if (health <= 0) {
 			onDeath();
+			StageController.getInstance().cameraAmp = 4;
 			return true;
 		}
 		invulnTicks = 20 * amount;
