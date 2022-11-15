@@ -1,5 +1,6 @@
 ﻿using System;
 using Cinemachine;
+using Player;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;

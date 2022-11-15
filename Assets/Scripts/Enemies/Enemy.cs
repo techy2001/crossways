@@ -1,12 +1,13 @@
+using Player;
 using UnityEngine;
 
 namespace Enemies {
-	public class Enemy : MonoBehaviour {
+	public class Enemy : Damageable {
 		private EnemySpawner spawner;
 		private new Rigidbody2D rigidbody;
 		private new SpriteRenderer renderer;
 		public float speed = 2;
-		public int health = 10;
+		private bool isDead;
 
 		private void Awake(){
 			rigidbody = GetComponent<Rigidbody2D>();
@@ -45,15 +46,11 @@ namespace Enemies {
 			}
 		}
 
-		public bool damage(int amount) {
-			health -= amount;
-			if (health <= 0) {
-				onDeath();
+		protected override void onDeath() {
+			if (isDead) {
+				return;
 			}
-			return true;
-		}
-
-		private void onDeath() {
+			isDead = true;
 			spawner.enemyKilled();
 			Destroy(gameObject);
 		}

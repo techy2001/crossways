@@ -45,7 +45,7 @@ public class Room : MonoBehaviour {
 		if (livingEnemies > 0) {
 			return;
 		}
-		Destroy(spawnWaves[lastWave].gameObject);
+		if (spawnWaves[lastWave]) Destroy(spawnWaves[lastWave].gameObject);
 		if (lastWave >= spawnWaves.Count - 1) {
 			StartCoroutine(endRoom());
 		} else {
