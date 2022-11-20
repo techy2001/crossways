@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Cinemachine;
 using Player;
 using Unity.VisualScripting;
@@ -11,6 +12,8 @@ public class StageController : MonoBehaviour {
 	[SerializeField] private PlayerController player;
 	[SerializeField] private CinemachineVirtualCamera cameraController;
 	[SerializeField] private GameObject failureScreen;
+	[SerializeField] private GameObject heartPosition;
+	private List<GameObject> hearts;
 	private bool stageComplete = false;
 	private int time = -1;
 	private int kills;
@@ -19,6 +22,10 @@ public class StageController : MonoBehaviour {
 	
 	private bool dead;
 	private int deadTime;
+
+	[SerializeField] private Sprite fullHeart;
+	[SerializeField] private Sprite halfHeart;
+	[SerializeField] private Sprite noHeart;
 
 	private void Awake() {
 		controller = this;
@@ -46,6 +53,17 @@ public class StageController : MonoBehaviour {
 		cameraController.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = cameraAmp;
 		if (time > -1 && !stageComplete) {
 			time++;
+		}
+	}
+
+	public void renderHearts(float HP, int maxHP) {
+		int count = (int) HP;
+		int heartIndex = 0;
+		while (count >= 2) {
+			if (hearts.Count > heartIndex) {
+				hearts[heartIndex].SetActive(true);
+				hearts[heartIndex].
+			}
 		}
 	}
 

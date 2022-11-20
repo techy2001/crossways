@@ -14,7 +14,7 @@ namespace Weapons {
 		public void setTarget(string newTarget) {
 			target = newTarget;
 		}
-
+		
 		private void FixedUpdate() {
 			calculateMovement();
 			transform.Rotate(0, 0, 15);

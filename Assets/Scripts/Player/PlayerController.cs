@@ -58,15 +58,20 @@ namespace Player {
 			if (invulnTicks > 0) {
 				return false;
 			}
-			health -= amount;
+			setHealth(getHealth() - amount);
 			StageController.getInstance().cameraAmp = 8;
-			if (health <= 0) {
+			if (getHealth() <= 0) {
 				onDeath();
 				StageController.getInstance().cameraAmp = 4;
 				return true;
 			}
 			invulnTicks = 20 * amount;
 			return true;
+		}
+
+		protected override void setHealth(float health) {
+			base.setHealth(health);
+			StageController.getInstance().renderHearts(health, maxHealth);
 		}
 
 		protected override void onDeath() {
