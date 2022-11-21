@@ -11,53 +11,59 @@ public class Room : MonoBehaviour {
 	private bool started;
 
 	private void OnTriggerEnter2D(Collider2D col) {
-		if (started || !col.CompareTag("Player")) {
+		if (this.started || !col.CompareTag("Player")) {
 			return;
 		}
-		started = true;
-		if (spawnWaves.Count < 1) {
+
+		this.started = true;
+		if (this.spawnWaves.Count < 1) {
 			return;
 		}
-		startWaves();
+
+		this.startWaves();
 	}
 
 	private void startWaves() {
-		foreach (Door door in doors) {
+		foreach (Door door in this.doors) {
 			door.lockDoor();
 		}
-		StartCoroutine(spawnEnemies(0));
+
+		StageController.getInstance().roomActive = true;
+		this.StartCoroutine(this.spawnEnemies(0));
 	}
 
 	private IEnumerator spawnEnemies(int wave) {
 		yield return new WaitForSeconds(0.1f);
-		foreach (EnemySpawner spawnPoint in spawnWaves[wave].spawnWave) {
+		foreach (EnemySpawner spawnPoint in this.spawnWaves[wave].spawnWave) {
 			spawnPoint.setRoom(this);
 			spawnPoint.spawnEnemy();
-			livingEnemies++;
-			yield return new WaitForSeconds(spawnWaves[wave].getDelay());
+			this.livingEnemies++;
+			yield return new WaitForSeconds(this.spawnWaves[wave].getDelay());
 		}
-		lastWave = wave;
+
+		this.lastWave = wave;
 	}
 
 	protected internal void enemyKilled() {
 		StageController.getInstance().enemyKilled();
-		livingEnemies--;
-		if (livingEnemies > 0) {
+		this.livingEnemies--;
+		if (this.livingEnemies > 0) {
 			return;
 		}
-		if (spawnWaves[lastWave]) Destroy(spawnWaves[lastWave].gameObject);
-		if (lastWave >= spawnWaves.Count - 1) {
-			StartCoroutine(endRoom());
+		if (this.spawnWaves[this.lastWave]) Destroy(this.spawnWaves[this.lastWave].gameObject);
+		if (this.lastWave >= this.spawnWaves.Count - 1) {
+			this.StartCoroutine(this.endRoom());
 		} else {
-			StartCoroutine(spawnEnemies(lastWave + 1));
+			this.StartCoroutine(this.spawnEnemies(this.lastWave + 1));
 		}
 	}
 
 	private IEnumerator endRoom() {
 		yield return new WaitForSeconds(0.2f);
-		foreach (Door door in doors) {
+		foreach (Door door in this.doors) {
 			door.unlockDoor();
 		}
-		Destroy(gameObject);
+		StageController.getInstance().roomActive = false;
+		Destroy(this.gameObject);
 	}
 }

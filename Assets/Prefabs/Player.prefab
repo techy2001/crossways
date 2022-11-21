@@ -137,9 +137,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d429271a3d773f4eba842981755dc69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bullet: {fileID: 3826908488210770313, guid: 8cc49fd50a13848488834e97bce6dfa4, type: 3}
-  health: 6
+  maxHealth: 6
   invulnTicks: 0
+  weapon: {fileID: 0}
 --- !u!95 &7216864083933615635
 Animator:
   serializedVersion: 4

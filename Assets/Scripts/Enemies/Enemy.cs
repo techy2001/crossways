@@ -10,32 +10,32 @@ namespace Enemies {
 		private bool isDead;
 
 		private void Awake(){
-			rigidbody = GetComponent<Rigidbody2D>();
-			renderer = GetComponent<SpriteRenderer>();
+			this.rigidbody = this.GetComponent<Rigidbody2D>();
+			this.renderer = this.GetComponent<SpriteRenderer>();
 		}
 
 		private void FixedUpdate() {
-			calculateMovement();
-			decideFlip();
+			this.calculateMovement();
+			this.decideFlip();
 		}
 
 		protected virtual void calculateMovement() {
 			PlayerController player = StageController.getInstance().getPlayer();
 			if (player) {
 				Vector3 playerPos = player.gameObject.transform.position;
-				Vector3 enemyPos = transform.position;
+				Vector3 enemyPos = this.transform.position;
 				Vector2 playerAim = new Vector2(playerPos.x - enemyPos.x, playerPos.y - enemyPos.y);
-				rigidbody.velocity = playerAim.normalized * speed;
+				this.rigidbody.velocity = playerAim.normalized * this.speed;
 			} else {
-				rigidbody.velocity = Vector2.zero;
+				this.rigidbody.velocity = Vector2.zero;
 			}
 		}
 
 		protected virtual void decideFlip() {
-			renderer.flipX = rigidbody.velocity.x switch {
+			this.renderer.flipX = this.rigidbody.velocity.x switch {
 				< 0 => true,
 				> 0 => false,
-				_ => renderer.flipX
+				_ => this.renderer.flipX
 			};
 		}
 
@@ -47,16 +47,17 @@ namespace Enemies {
 		}
 
 		protected override void onDeath() {
-			if (isDead) {
+			if (this.isDead) {
 				return;
 			}
-			isDead = true;
-			spawner.enemyKilled();
-			Destroy(gameObject);
+
+			this.isDead = true;
+			this.spawner.enemyKilled();
+			Destroy(this.gameObject);
 		}
 
 		public void setSpawner(EnemySpawner source) {
-			spawner = source;
+			this.spawner = source;
 		}
 	}
 }

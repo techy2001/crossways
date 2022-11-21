@@ -7,7 +7,7 @@ namespace Enemies {
 		[SerializeField] private float delay;
 
 		public float getDelay() {
-			return delay;
+			return this.delay;
 		}
 	}
 }

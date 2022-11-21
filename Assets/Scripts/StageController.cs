@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Cinemachine;
 using Player;
-using Unity.VisualScripting;
+using UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,57 +13,85 @@ public class StageController : MonoBehaviour {
 	[SerializeField] private CinemachineVirtualCamera cameraController;
 	[SerializeField] private GameObject failureScreen;
 	[SerializeField] private GameObject heartPosition;
-	private List<GameObject> hearts;
+	private readonly List<Heart> hearts = new List<Heart>();
 	private bool stageComplete = false;
 	private int time = -1;
 	private int kills;
 	public float cameraAmp;
-	public int livingEnemies;
+	
+	private int livingEnemies;
+	public bool noEnemies = true;
+	public bool roomActive = false;
 	
 	private bool dead;
 	private int deadTime;
 
+	[SerializeField] private GameObject heartContainer;
+	[SerializeField] private Heart heartPrefab;
 	[SerializeField] private Sprite fullHeart;
 	[SerializeField] private Sprite halfHeart;
 	[SerializeField] private Sprite noHeart;
 
 	private void Awake() {
 		controller = this;
-		GameObject playerObject = Instantiate(player.gameObject);
-		playerObject.transform.position = playerSpawn.transform.position;
-		cameraController.Follow = playerObject.transform;
-		player = playerObject.GetComponent<PlayerController>();
+		GameObject playerObject = Instantiate(this.player.gameObject);
+		playerObject.transform.position = this.playerSpawn.transform.position;
+		this.cameraController.Follow = playerObject.transform;
+		this.player = playerObject.GetComponent<PlayerController>();
 	}
 
 	private void FixedUpdate() {
-		if (!dead) {
-			cameraAmp /= 1.1f;
-			if (cameraAmp < 0.01) cameraAmp = 0;
-			if (livingEnemies == 0) {
-				player.health = 6;
+		if (!this.dead) {
+			this.cameraAmp /= 1.1f;
+			if (this.cameraAmp < 0.01) this.cameraAmp = 0;
+			if (this.noEnemies && !this.roomActive) {
+				if (this.player.getHealth() < this.player.maxHealth) {
+					this.player.setHealth(this.player.maxHealth);
+				}
 			}
 		} else {
-			deadTime++;
-			Time.timeScale = Mathf.Lerp(1, 0.25f, deadTime / 200f);
+			this.deadTime++;
+			Time.timeScale = Mathf.Lerp(1, 0.25f, this.deadTime / 200f);
 			if (Input.GetButton("Restart")) {
 				restart();
 				return;
 			}
 		}
-		cameraController.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = cameraAmp;
-		if (time > -1 && !stageComplete) {
-			time++;
+
+		this.cameraController.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = this.cameraAmp;
+		if (this.time > -1 && !this.stageComplete) {
+			this.time++;
 		}
 	}
 
-	public void renderHearts(float HP, int maxHP) {
-		int count = (int) HP;
+	public void renderHearts(float hp, float maxHp) {
+		int count = (int) Mathf.Min(hp, maxHp);
 		int heartIndex = 0;
+		foreach (Heart heart in this.hearts) {
+			heart.gameObject.SetActive(false);
+		}
+		while (this.hearts.Count <= maxHp / 2) {
+			GameObject newHeart = Instantiate(this.heartPrefab.gameObject, this.heartContainer.transform);
+			Heart heart = newHeart.GetComponent<Heart>();
+			heart.rectTransform.SetPositionAndRotation(heart.rectTransform.position + new Vector3(65 * this.hearts.Count, 0, 0), heart.rectTransform.rotation);
+			this.hearts.Add(heart);
+		}
 		while (count >= 2) {
-			if (hearts.Count > heartIndex) {
-				hearts[heartIndex].SetActive(true);
-				hearts[heartIndex].
-			}
+			this.hearts[heartIndex].gameObject.SetActive(true);
+			this.hearts[heartIndex].renderer.sprite = this.fullHeart;
+			heartIndex++;
+			count -= 2;
+		}
+		while (count >= 1) {
+			this.hearts[heartIndex].gameObject.SetActive(true);
+			this.hearts[heartIndex].renderer.sprite = this.halfHeart;
+			heartIndex++;
+			count -= 1;
+		}
+		while (maxHp > (heartIndex) * 2) {
+			this.hearts[heartIndex].gameObject.SetActive(true);
+			this.hearts[heartIndex].renderer.sprite = this.noHeart;
+			heartIndex++;
 		}
 	}
 
@@ -72,29 +100,38 @@ public class StageController : MonoBehaviour {
 	}
 
 	public void startTimer() {
-		time = 0;
+		this.time = 0;
 	}
 
 	public void enemyKilled() {
-		kills++;
-		livingEnemies--;
+		this.kills++;
+		this.setLivingEnemies(this.livingEnemies - 1);
+	}
+
+	private void setLivingEnemies(int count) {
+		this.livingEnemies = count;
+		this.noEnemies = this.livingEnemies <= 0;
 	}
 
 	public PlayerController getPlayer() {
-		return player;
+		return this.player;
 	}
 
 	public CinemachineVirtualCamera getCamera() {
-		return cameraController;
+		return this.cameraController;
 	}
 
 	public void playerDead() {
-		dead = true;
-		failureScreen.SetActive(true);
+		this.dead = true;
+		this.failureScreen.SetActive(true);
 	}
 
 	private static void restart() {
 		Time.timeScale = 1;
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+	}
+
+	public void addLivingEnemy() {
+		this.setLivingEnemies(this.livingEnemies + 1);
 	}
 }

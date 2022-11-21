@@ -17,61 +17,63 @@ namespace Weapons {
 		private int fireCooldown;
 
 		private void Awake(){
-			renderer = GetComponent<SpriteRenderer>();
-			audio = GetComponent<AudioSource>();
+			this.renderer = this.GetComponent<SpriteRenderer>();
+			this.audio = this.GetComponent<AudioSource>();
 		}
 
 		public override void tick() {
-			if (fireCooldown > 0) {
-				fireCooldown--;
+			if (this.fireCooldown > 0) {
+				this.fireCooldown--;
 			}
 		}
 
 		public override void primaryFire(GameObject owner, Vector3 from, Vector3 direction, string target) {
-			if (!held || fireCooldown > 0) {
+			if (!this.held || this.fireCooldown > 0) {
 				return;
 			}
-			if (ammo <= 0) {
-				audio.clip = empty;
-				audio.Play();
+			if (this.ammo <= 0) {
+				this.audio.clip = this.empty;
+				this.audio.Play();
 				return;
 			}
 			const float speed = 0.6f;
-			bullet.setTarget(target);
+			this.bullet.setTarget(target);
 			const float spread = 0.4f;
 			for (int i = 0; i < 9; i++) {
 				Vector3 newDirection = direction.normalized;
 				newDirection += (new Vector3(Random.value - 0.5f, Random.value - 0.5f, Random.value - 0.5f) * spread);
 				newDirection *= speed;
-				bullet.speed = newDirection;
-				GameObject spawnedEnemy = Instantiate(bullet.gameObject);
+				this.bullet.speed = newDirection;
+				GameObject spawnedEnemy = Instantiate(this.bullet.gameObject);
 				spawnedEnemy.transform.position = from;
 			}
-			audio.clip = shoot;
-			audio.Play();
-			ammo--;
-			fireCooldown = 30;
+
+			this.audio.clip = this.shoot;
+			this.audio.Play();
+			this.ammo--;
+			this.fireCooldown = 30;
 		}
 
 		public override void secondaryFire(GameObject owner, Vector3 from, Vector3 direction, string target) {
-			if (!held) {
+			if (!this.held) {
 				return;
 			}
-			audio.clip = throwProjectile;
-			audio.Play();
+
+			this.audio.clip = this.throwProjectile;
+			this.audio.Play();
 			const float speed = 0.8f;
-			projectile.speed = direction.normalized * speed;
-			projectile.setTarget(target);
-			projectile.owner = owner;
-			GameObject spawnedEnemy = Instantiate(projectile.gameObject);
+			this.projectile.speed = direction.normalized * speed;
+			this.projectile.setTarget(target);
+			this.projectile.owner = owner;
+			GameObject spawnedEnemy = Instantiate(this.projectile.gameObject);
 			spawnedEnemy.transform.position = from;
-			ammo = 6;
-			held = false;
-			renderer.enabled = held;
+			this.ammo = 6;
+			this.held = false;
+			this.renderer.enabled = this.held;
 		}
 
 		public override SpriteRenderer getRenderer() {
-			return renderer;
+			return this.renderer;
 		}
 
 		private void OnTriggerEnter2D(Collider2D col) {

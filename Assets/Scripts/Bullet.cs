@@ -9,43 +9,44 @@ public class Bullet : MonoBehaviour {
 	private int lifetime = 100;
 	
 	private void Awake() {
-		if (!renderer) {
-			renderer = GetComponent<SpriteRenderer>();
+		if (!this.renderer) {
+			this.renderer = this.GetComponent<SpriteRenderer>();
 		}
 	}
 
 	public void setTarget(string newTarget) {
-		if (!renderer) {
-			renderer = GetComponent<SpriteRenderer>();
+		if (!this.renderer) {
+			this.renderer = this.GetComponent<SpriteRenderer>();
 		}
-		if (!renderer) {
+		if (!this.renderer) {
 			return;
 		}
-		target = newTarget;
-		renderer.sprite = target switch {
-			"Player" => enemyBullet,
-			"Enemy" => playerBullet,
-			_ => renderer.sprite
+
+		this.target = newTarget;
+		this.renderer.sprite = this.target switch {
+			"Player" => this.enemyBullet,
+			"Enemy" => this.playerBullet,
+			_ => this.renderer.sprite
 		};
 	}
 
 	private void FixedUpdate() {
-		calculateMovement();
-		lifetime--;
-		if (lifetime <= 0) {
-			Destroy(gameObject);
+		this.calculateMovement();
+		this.lifetime--;
+		if (this.lifetime <= 0) {
+			Destroy(this.gameObject);
 		}
 	}
 
 	private void calculateMovement() {
-		Transform transform1 = transform;
+		Transform transform1 = this.transform;
 		Vector3 position = transform1.position;
-		position += speed;
+		position += this.speed;
 		transform1.position = position;
 	}
 
 	private void OnTriggerEnter2D(Collider2D col) {
-		if (target != null && !col.gameObject.CompareTag(target)) {
+		if (this.target != null && !col.gameObject.CompareTag(this.target)) {
 			return;
 		}
 		Damageable damageable = col.gameObject.GetComponent<Damageable>();
@@ -53,6 +54,6 @@ public class Bullet : MonoBehaviour {
 			return;
 		}
 		damageable.damage(1);
-		Destroy(gameObject);
+		Destroy(this.gameObject);
 	}
 }

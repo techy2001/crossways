@@ -5,16 +5,17 @@ namespace Enemies {
 		private bool started;
 		
 		private void OnTriggerEnter2D(Collider2D col) {
-			if (started || !col.CompareTag("Player")) {
+			if (this.started || !col.CompareTag("Player")) {
 				return;
 			}
-			started = true;
-			spawnEnemy();
+
+			this.started = true;
+			this.spawnEnemy();
 		}
 
 		protected internal override void enemyKilled() {
 			StageController.getInstance().enemyKilled();
-			Destroy(gameObject);
+			Destroy(this.gameObject);
 		}
 	}
 }

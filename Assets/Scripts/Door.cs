@@ -13,55 +13,56 @@ public class Door : MonoBehaviour {
 	private bool shouldBeOpen;
 
 	private void Awake() {
-		boxCollider = GetComponents<BoxCollider2D>()[1];
-		renderer = GetComponent<SpriteRenderer>();
-		lockedVisual = locked;
-		updateSprite();
+		this.boxCollider = this.GetComponents<BoxCollider2D>()[1];
+		this.renderer = this.GetComponent<SpriteRenderer>();
+		this.lockedVisual = this.locked;
+		this.updateSprite();
 	}
 	
 	private void OnTriggerEnter2D(Collider2D col) {
 		if (!col.gameObject.CompareTag("Player")) {
 			return;
 		}
-		shouldBeOpen = true;
-		if (!opened && !locked) {
-			setOpened(true);
+
+		this.shouldBeOpen = true;
+		if (!this.opened && !this.locked) {
+			this.setOpened(true);
 		}
 	}
 
 	private void OnTriggerExit2D(Collider2D other) {
-		shouldBeOpen = false;
-		setOpened(false);
+		this.shouldBeOpen = false;
+		this.setOpened(false);
 	}
 
 	public void lockDoor() {
-		StartCoroutine(shutLockDoor());
+		this.StartCoroutine(this.shutLockDoor());
 	}
 
 	private IEnumerator shutLockDoor() {
-		setOpened(false);
-		locked = true;
+		this.setOpened(false);
+		this.locked = true;
 		yield return new WaitForSeconds(0.2f);
-		lockedVisual = locked;
-		updateSprite();
+		this.lockedVisual = this.locked;
+		this.updateSprite();
 	}
 
 	public void unlockDoor() {
-		locked = false;
-		lockedVisual = locked;
-		updateSprite();
-		if (shouldBeOpen) {
-			setOpened(true);
+		this.locked = false;
+		this.lockedVisual = this.locked;
+		this.updateSprite();
+		if (this.shouldBeOpen) {
+			this.setOpened(true);
 		}
 	}
 
 	private void setOpened(bool open) {
-		opened = open;
-		boxCollider.enabled = !open;
-		updateSprite();
+		this.opened = open;
+		this.boxCollider.enabled = !open;
+		this.updateSprite();
 	}
 
 	private void updateSprite() {
-		renderer.sprite = opened ? openSprite : lockedVisual ? lockedSprite : closedSprite;
+		this.renderer.sprite = this.opened ? this.openSprite : this.lockedVisual ? this.lockedSprite : this.closedSprite;
 	}
 }

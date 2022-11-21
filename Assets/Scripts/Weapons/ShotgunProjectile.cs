@@ -12,43 +12,44 @@ namespace Weapons {
 		private int returnTimer = 40;
 
 		public void setTarget(string newTarget) {
-			target = newTarget;
+			this.target = newTarget;
 		}
 		
 		private void FixedUpdate() {
-			calculateMovement();
-			transform.Rotate(0, 0, 15);
-			if (returnTimer > 0) {
-				returnTimer--;
-				if (returnTimer <= 0) {
-					dealtDamage = true;
+			this.calculateMovement();
+			this.transform.Rotate(0, 0, 15);
+			if (this.returnTimer > 0) {
+				this.returnTimer--;
+				if (this.returnTimer <= 0) {
+					this.dealtDamage = true;
 				}
 			}
 		}
 
 		private void calculateMovement() {
-			float distance = GameMath.distanceTo(transform.position, owner.transform.position);
-			if (dealtDamage) {
-				float power = speed.magnitude;
-				Vector3 difference = owner.transform.position - transform.position;
-				speed = difference.normalized * MathF.Min(distance, power);
+			float distance = GameMath.distanceTo(this.transform.position, this.owner.transform.position);
+			if (this.dealtDamage) {
+				float power = this.speed.magnitude;
+				Vector3 difference = this.owner.transform.position - this.transform.position;
+				this.speed = difference.normalized * MathF.Min(distance, power);
 			}
-			transform.position += speed;
-			if (dealtDamage && distance < 0.4f) {
+
+			this.transform.position += this.speed;
+			if (this.dealtDamage && distance < 0.4f) {
 				PlayerController player = StageController.getInstance().getPlayer();
-				if (owner == player.gameObject && player.weapon is ShotgunWeapon shotgunWeapon) {
+				if (this.owner == player.gameObject && player.weapon is ShotgunWeapon shotgunWeapon) {
 					shotgunWeapon.held = true;
 					shotgunWeapon.getRenderer().enabled = true;
 				}
-				Destroy(gameObject);
+				Destroy(this.gameObject);
 			}
 		}
 
 		private void OnTriggerEnter2D(Collider2D col) {
-			if (dealtDamage) {
+			if (this.dealtDamage) {
 				return;
 			}
-			if (target != null && !col.gameObject.CompareTag(target)) {
+			if (this.target != null && !col.gameObject.CompareTag(this.target)) {
 				return;
 			}
 			Damageable damageable = col.gameObject.GetComponent<Damageable>();
@@ -56,7 +57,7 @@ namespace Weapons {
 				return;
 			}
 			damageable.damage(4);
-			dealtDamage = true;
+			this.dealtDamage = true;
 		}
 	}
 }

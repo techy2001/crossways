@@ -6,19 +6,19 @@ namespace Enemies {
 		private Room room;
 
 		public void setRoom(Room newRoom) {
-			room = newRoom;
+			this.room = newRoom;
 		}
 
 		public void spawnEnemy() {
-			GameObject spawnedEnemy = Instantiate(enemyReference.gameObject);
+			GameObject spawnedEnemy = Instantiate(this.enemyReference.gameObject);
 			spawnedEnemy.GetComponent<Enemy>().setSpawner(this);
-			spawnedEnemy.transform.position = transform.position;
-			StageController.getInstance().livingEnemies += 1;
+			spawnedEnemy.transform.position = this.transform.position;
+			StageController.getInstance().addLivingEnemy();
 		}
 		
 		protected internal virtual void enemyKilled() {
-			room.enemyKilled();
-			Destroy(gameObject);
+			this.room.enemyKilled();
+			Destroy(this.gameObject);
 		}
 	}
 }

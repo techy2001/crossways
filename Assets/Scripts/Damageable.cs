@@ -5,22 +5,22 @@ public class Damageable : MonoBehaviour {
 	private float health = 1;
 	
 	public virtual bool damage(int amount) {
-		health -= amount;
-		if (health <= 0) {
-			onDeath();
+		this.health -= amount;
+		if (this.health <= 0) {
+			this.onDeath();
 		}
 		return true;
 	}
 
-	protected float getHealth() {
-		return health;
+	public float getHealth() {
+		return this.health;
 	}
 
-	protected virtual void setHealth(float health) {
+	public virtual void setHealth(float health) {
 		this.health = health;
 	}
 	
 	protected virtual void onDeath() {
-		Destroy(gameObject);
+		Destroy(this.gameObject);
 	}
 }
