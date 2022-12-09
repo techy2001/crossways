@@ -1,15 +1,14 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Weapons {
 	public class ShotgunWeapon : Weapon {
 		private new SpriteRenderer renderer;
 		private new AudioSource audio;
-		private AudioClip shoot;
-		private AudioClip empty;
-		private AudioClip throwProjectile;
-		private AudioClip catchProjectile;
+		public AudioClip shoot;
+		public AudioClip empty;
+		public AudioClip throwProjectile;
+		public AudioClip catchProjectile;
 		public bool held = true;
 		private int ammo = 6;
 		public Bullet bullet;
@@ -32,8 +31,8 @@ namespace Weapons {
 				return;
 			}
 			if (this.ammo <= 0) {
-				this.audio.clip = this.empty;
-				this.audio.Play();
+				this.audio.PlayOneShot(this.empty);
+				this.fireCooldown = 30;
 				return;
 			}
 			const float speed = 0.6f;
@@ -44,12 +43,11 @@ namespace Weapons {
 				newDirection += (new Vector3(Random.value - 0.5f, Random.value - 0.5f, Random.value - 0.5f) * spread);
 				newDirection *= speed;
 				this.bullet.speed = newDirection;
-				GameObject spawnedEnemy = Instantiate(this.bullet.gameObject);
-				spawnedEnemy.transform.position = from;
+				Instantiate(this.bullet.gameObject, from, Quaternion.identity);
 			}
 
-			this.audio.clip = this.shoot;
-			this.audio.Play();
+			StageController.getInstance().cameraAmp += 1;
+			this.audio.PlayOneShot(this.shoot);
 			this.ammo--;
 			this.fireCooldown = 30;
 		}
@@ -59,8 +57,7 @@ namespace Weapons {
 				return;
 			}
 
-			this.audio.clip = this.throwProjectile;
-			this.audio.Play();
+			this.audio.PlayOneShot(this.throwProjectile);
 			const float speed = 0.8f;
 			this.projectile.speed = direction.normalized * speed;
 			this.projectile.setTarget(target);
@@ -75,11 +72,15 @@ namespace Weapons {
 		public override SpriteRenderer getRenderer() {
 			return this.renderer;
 		}
-
+		
 		private void OnTriggerEnter2D(Collider2D col) {
 			if (col.gameObject.CompareTag("Player")) {
 				StageController.getInstance().getPlayer().weapon = this;
 			}
+		}
+
+		public void playCatchSound() {
+			this.audio.PlayOneShot(this.catchProjectile);
 		}
 	}
 }

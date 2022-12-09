@@ -45,9 +45,7 @@ public class StageController : MonoBehaviour {
 			this.cameraAmp /= 1.1f;
 			if (this.cameraAmp < 0.01) this.cameraAmp = 0;
 			if (this.noEnemies && !this.roomActive) {
-				if (this.player.getHealth() < this.player.maxHealth) {
-					this.player.setHealth(this.player.maxHealth);
-				}
+				this.player.setHealth(this.player.maxHealth);
 			}
 		} else {
 			this.deadTime++;
@@ -57,7 +55,6 @@ public class StageController : MonoBehaviour {
 				return;
 			}
 		}
-
 		this.cameraController.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = this.cameraAmp;
 		if (this.time > -1 && !this.stageComplete) {
 			this.time++;
@@ -73,7 +70,7 @@ public class StageController : MonoBehaviour {
 		while (this.hearts.Count <= maxHp / 2) {
 			GameObject newHeart = Instantiate(this.heartPrefab.gameObject, this.heartContainer.transform);
 			Heart heart = newHeart.GetComponent<Heart>();
-			heart.rectTransform.SetPositionAndRotation(heart.rectTransform.position + new Vector3(65 * this.hearts.Count, 0, 0), heart.rectTransform.rotation);
+			heart.rectTransform.SetPositionAndRotation(heart.rectTransform.position + new Vector3((Screen.width / 1080) * 75 * this.hearts.Count, 0, 0), heart.rectTransform.rotation);
 			this.hearts.Add(heart);
 		}
 		while (count >= 2) {

@@ -4,14 +4,15 @@ using UnityEngine;
 namespace Enemies {
 	public class Enemy : Damageable {
 		private EnemySpawner spawner;
-		private new Rigidbody2D rigidbody;
+		protected new Rigidbody2D rigidbody;
 		private new SpriteRenderer renderer;
 		public float speed = 2;
 		private bool isDead;
 
-		private void Awake(){
+		protected void Awake(){
 			this.rigidbody = this.GetComponent<Rigidbody2D>();
 			this.renderer = this.GetComponent<SpriteRenderer>();
+			this.setHealth(this.maxHealth);
 		}
 
 		private void FixedUpdate() {

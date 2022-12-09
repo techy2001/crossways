@@ -39,6 +39,7 @@ namespace Weapons {
 				PlayerController player = StageController.getInstance().getPlayer();
 				if (this.owner == player.gameObject && player.weapon is ShotgunWeapon shotgunWeapon) {
 					shotgunWeapon.held = true;
+					shotgunWeapon.playCatchSound();
 					shotgunWeapon.getRenderer().enabled = true;
 				}
 				Destroy(this.gameObject);

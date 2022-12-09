@@ -37,7 +37,7 @@ namespace Player {
 					Vector3 difference = mousePoint - this.transform.position;
 					difference = new Vector3(difference.x, difference.y, 0).normalized;
 					bool mouseLeft = difference.x < 0;
-					this.weapon.transform.position = this.transform.position + new Vector3(mouseLeft ? -0.4f : 0.4f, 0, 0);
+					this.weapon.transform.position = this.transform.position + new Vector3(mouseLeft ? -0.4f : 0.4f, 0, 0.1f);
 					if (Input.GetButton("Fire1")) {
 						this.weapon.primaryFire(this.gameObject, this.transform.position, difference * 0.5f, "Enemy");
 					}
@@ -60,14 +60,8 @@ namespace Player {
 				return false;
 			}
 
-			this.setHealth(this.getHealth() - amount);
-			StageController.getInstance().cameraAmp = 8;
-			if (this.getHealth() <= 0) {
-				this.onDeath();
-				StageController.getInstance().cameraAmp = 4;
-				return true;
-			}
-
+			base.damage(amount);
+			StageController.getInstance().cameraAmp += 8;
 			this.invulnTicks = 20 * amount;
 			return true;
 		}
@@ -79,6 +73,7 @@ namespace Player {
 
 		protected override void onDeath() {
 			StageController.getInstance().playerDead();
+			StageController.getInstance().cameraAmp += 4;
 			base.onDeath();
 		}
 	}
