@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using Weapons;
 
 namespace Player {
@@ -11,6 +12,7 @@ namespace Player {
 		public int invulnTicks;
 		public Weapon weapon;
 		private Camera mainCamera;
+		private Image image;
 
 		private void Awake() {
 			this.mainCamera = Camera.main;
